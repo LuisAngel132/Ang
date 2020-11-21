@@ -17,22 +17,38 @@ class Comentarios extends Controller
       tokenCan('administrador')){
         $persona2=0;
         $persona3=0;
+        $persona6=0;
+        $persona8=0;
         $persona2=DB::table('usuarios')
         ->join('personas', 'usuarios.id', '=', 'personas.usuario')
         ->select('personas.usuario','personas.id')
         ->Where('usuarios.correo', $request->user()->correo)->get();
         $persona3=DB::table('usuarios')
-        ->join('personas', 'usuarios.id', '=', 'personas.usuario')
-        ->join('productos', 'personas.id', '=', 'productos.persona')
-        ->select('personas.usuario','personas.id')
-        ->Where('usuarios.correo', $request->user()->correo)->get();
-        $request->validate([
-                'titulo'=>'required',
-                'comentario'=>'required',
-                'persona'=>'numeric|required',
-                'producto'=>'numeric|required',
-                 ]);
-                 
+                  ->join('personas', 'usuarios.id', '=', 'personas.usuario')
+                  ->join('productos', 'personas.id', '=', 'productos.persona')
+                  ->select('productos.id')
+                  ->Where('usuarios.correo', $request->user()->correo)->get(); 
+        $longitud = count($persona2);
+        foreach($persona2 as $value)
+        {
+          $persona8=$value->id;
+        }
+        for ($i = 0; $i <$longitud; $i++) {
+          foreach($persona3 as $value)
+          {
+            $persona6=$value->id;
+      if( $persona6==$request->producto)
+      {
+        if($persona6==$request->producto)
+        {
+
+          $request->validate([
+            'titulo'=>'required',
+            'comentario'=>'required',
+            'persona'=>'numeric|required',
+            'producto'=>'numeric|required',
+             ]);
+             
         $Comentario=new Comentario;
         $Comentario->titulo=$request->titulo;
         $Comentario->comentario=$request->comentario;
@@ -40,28 +56,86 @@ class Comentarios extends Controller
         $Comentario->producto=$request->producto;
         $Comentario->save();
         $name=$request->user()->correo;
-
+        
         $persona = DB::table('usuarios')
         ->join('personas', 'usuarios.id', '=', 'personas.usuario')
         ->select('usuarios.correo', 'personas.*')
-       ->Where('personas.id', $request->persona)->get();
-       $persona2 = DB::table('usuarios')
-       ->join('personas', 'usuarios.id', '=', 'personas.usuario')
-       ->join('productos', 'personas.id', '=', 'productos.persona')
-       ->select('usuarios.correo', 'personas.*','productos.*')
-      ->Where('productos.id', $request->producto)->get();
-     foreach($persona as $value){
-$correo1=$value->correo;
-$sujeto=$value->nombre;
-     }
-     foreach($persona2 as $value){
-      $correo2=$value->correo;
-$producto=$value->producto;
+        ->Where('personas.id', $request->persona)->get();
+        $persona2 = DB::table('usuarios')
+        ->join('personas', 'usuarios.id', '=', 'personas.usuario')
+        ->join('productos', 'personas.id', '=', 'productos.persona')
+        ->select('usuarios.correo', 'personas.*','productos.*')
+        ->Where('productos.id', $request->producto)->get();
+        
+        foreach($persona as $value){
+        $correo1=$value->correo;
+        $sujeto=$value->nombre;
+        }
+        foreach($persona2 as $value){
+        $correo2=$value->correo;
+        $producto=$value->producto;
+        }
+        
+        
+        }
+        return response()->json([$Comentario,],200);
+
+      }
+      if( $persona8==$request->persona)
+  {
+
+
+          $request->validate([
+            'titulo'=>'required',
+            'comentario'=>'required',
+            'persona'=>'numeric|required',
+            'producto'=>'numeric|required',
+             ]);
+             
+        $Comentario=new Comentario;
+        $Comentario->titulo=$request->titulo;
+        $Comentario->comentario=$request->comentario;
+        $Comentario->persona=$request->persona;
+        $Comentario->producto=$request->producto;
+        $Comentario->save();
+        $name=$request->user()->correo;
+        
+        $persona = DB::table('usuarios')
+        ->join('personas', 'usuarios.id', '=', 'personas.usuario')
+        ->select('usuarios.correo', 'personas.*')
+        ->Where('personas.id', $request->persona)->get();
+        $persona2 = DB::table('usuarios')
+        ->join('personas', 'usuarios.id', '=', 'personas.usuario')
+        ->join('productos', 'personas.id', '=', 'productos.persona')
+        ->select('usuarios.correo', 'personas.*','productos.*')
+        ->Where('productos.id', $request->producto)->get();
+        
+        foreach($persona as $value){
+        $correo1=$value->correo;
+        $sujeto=$value->nombre;
+        }
+        foreach($persona2 as $value){
+        $correo2=$value->correo;
+        $producto=$value->producto;
+        }
+        return response()->json([$Comentario,],200);
+
+      }
+
     }
-       $this->correoconcomentarios($correo1,$correo2,$producto,$sujeto);
-       return response()->json([$Comentario],200);
+
+  } 
+ 
+  
+
+ 
 
 
+                
+       
+  return response()->json(["no se puede completar la accion",],400);
+
+      
         }
         $name=$request->user()->correo;
         $this->enviarcorreo($name);
