@@ -83,7 +83,6 @@ return response()->json([$persona,"para insertar su producto o comentario guarde
     }
     public function actualizarpersona(Request $request,$id){
 $persona3=0;
-      $persona=persona::find($id);
 $persona2=DB::table('usuarios')
 ->join('personas', 'usuarios.id', '=', 'personas.usuario')
 ->select('personas.usuario','personas.id')
@@ -100,6 +99,7 @@ if ($request->user()->tokenCan('cliente')||$request->user()->tokenCan('administr
         'apellidomaterno'=>'required',
         'edad'=>'numeric|required',
          ]);    
+         $persona=persona::find($id);
     $persona->nombre=$request->nombre;
         $persona->apellidopaterno=$request->apellidopaterno;
         $persona->apellidomaterno=$request->apellidomaterno;
