@@ -65,8 +65,8 @@ public function enviarcorreo($name){
   $correoenvia=config('app.mjcorreo');
       $nombreenvia =config('app.mjquienloenvia');
       $correoadministrador=config('app.mjadministrador');
-    $$apikey=config('app.mjapikeypub');
-    $apisecret=config('app.mjapikeypriv');
+      $apikey=config('app.mjapikeypub');
+      $apisecret=config('app.mjapikeypriv');
       $persona = DB::table('usuarios')
       ->join('personas', 'usuarios.id', '=', 'personas.usuario')
       ->select('usuarios.correo', 'personas.*')
