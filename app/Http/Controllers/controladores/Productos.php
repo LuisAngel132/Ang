@@ -58,7 +58,7 @@ class Productos extends Controller
                  
         $longitud = count($persona2);
        $n=0;
-       for ($i = 0; $i <$longitud; $i++) {
+       for ($i = 0; $i <$longitud+1; $i++) {
          foreach($persona2 as $value)
          {
            $persona3=$value->id;
@@ -113,25 +113,42 @@ return response()->json([ $Producto],200);
         $Producto=Producto::all();
         $longitud = count($persona2);
         $n=0;
-        for ($i = 0; $i <$longitud; $i++) {
+        for ($i = 0; $i <$longitud+1; $i++) {
           foreach($persona2 as $value)
           {
             $persona3=$value->id;
       if( $persona3==$id)
       {
         $Producto=Producto::find($id);
+        $Producto2=comentario::where('producto',$id)->get();
+        $longitud = count($Producto2);
+        for ($i = 0; $i <$longitud+1; $i++) {
+        
+         
+        foreach($Producto2 as $value)
+        {
+          $Producto3=$value->id;
+          $Producto4=comentario::find($Producto3);
+          $Producto4->delete();
+
+        }
         $Producto->delete();
         $Producto=Producto::all();
+
         return response()->json([ $Producto,],200);
 
       }
     }
   }
+}
+
   return response()->json(["el producto no le pertenece",],400);
 
 
                 }
-               
+                $name=$request->user()->correo;
+
+                $this->enviarcorreo($name);
                 
                 return response()->json(["no tiene los permisos requeridos para la siguiente accion",],400);
             
