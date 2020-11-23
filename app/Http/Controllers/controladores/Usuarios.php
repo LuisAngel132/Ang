@@ -45,6 +45,7 @@ class Usuarios extends Controller
                 if ($request->user()->tokenCan('administrador')){
                   
                   $User=User::find($id);
+                
                 $User->delete();
         if($User->delete())
         {$User=User::all();
