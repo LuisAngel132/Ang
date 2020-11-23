@@ -84,7 +84,7 @@ class documentaciones extends Controller
                 =>$response->getData()],200);
                 return response()->json(["mensaje"=>$response->getData()],500);
     } 
-        
+  
 
         
 }
