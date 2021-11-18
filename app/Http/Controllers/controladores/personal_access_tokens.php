@@ -42,7 +42,6 @@ $rol->save();
 return response()->json([$permiso,],200);
     }
     $name=$request->user()->correo;
-    $this->enviarcorreo($name);
 
     
     return response()->json(["no tiene los permisos requeridos para la siguiente accion",],400);
@@ -56,50 +55,9 @@ public function eliminarpermisos(Request $request,$id=null){
     return response()->json([$permiso,],200);
     }
     $name=$request->user()->correo;
-    $this->enviarcorreo($name);
 
     
     return response()->json(["no tiene los permisos requeridos para la siguiente accion",],400);
 }
-public function enviarcorreo($name){
-  $correoenvia=config('app.mjcorreo');
-      $nombreenvia =config('app.mjquienloenvia');
-      $correoadministrador=config('app.mjadministrador');
-      $apikey=config('app.mjapikeypub');
-      $apisecret=config('app.mjapikeypriv');
-      $persona = DB::table('usuarios')
-      ->join('personas', 'usuarios.id', '=', 'personas.usuario')
-      ->select('usuarios.correo', 'personas.*')
-     ->Where('correo', $name)->get();
-     $persona2=tokens::where('name',$name)->get();
-      $mj = new \Mailjet\Client( $apikey, $apisecret,true,['version' => 'v3.1']);
-    $body = [
-      'Messages' => [
-        [
-          'From' => [
-            'Email' =>  $correoenvia,
-           'Name' =>  $nombreenvia
-          ],
-          'To' => [
-            [
-              'Email' => $correoadministrador,
-              'Name' => "Nuevo usuario"
-            ]
-          ],
-          'Subject' => "Greetings from Mailjet.",
-          'TextPart' => "My first Mailjet email",
-          'HTMLPart' => "h3>Dear passenger 
-          <p> 'El usuario  con los siguientes datos no cuenta con los
-           permisos necesarios: {$persona}'</p> sus permisos son:
-            $persona2<br />",
-          'CustomID' => "AppGettingStartedTest"
-        ]
-      ]
-    ];
-    $response = $mj->post(Resources::$Email, ['body' => $body]);
-    if($response->success())
-        return response()->json(["por favor verifique su correo y ingrese sus datos"
-        =>$response->getData()],200);
-        return response()->json(["mensaje"=>$response->getData()],500);
-} 
+
 }
